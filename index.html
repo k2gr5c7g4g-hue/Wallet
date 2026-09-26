@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Wallet">
+
+  <title>Wallet</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- =========================
+       HOME
+  ========================== -->
+  <section id="mainScreen" class="screen active">
+
+    <header class="top-header">
+
+      <button id="menuBtn" class="icon-btn" aria-label="メニュー">
+        ☰
+      </button>
+
+      <div class="header-title">
+        <span>Wallet</span>
+        <small id="headerDate"></small>
+      </div>
+
+      <button id="settingsBtn" class="icon-btn" aria-label="設定">
+        ⚙️
+      </button>
+
+    </header>
+
+
+    <!-- 月間予算 -->
+    <div class="hero-card">
+
+      <div class="hero-label">
+        今月あと使える金額
+      </div>
+
+      <div id="monthlyRemaining" class="hero-number">
+        ¥0
+      </div>
+
+      <div id="monthlyUsed" class="hero-sub">
+        使用額 ¥0
+      </div>
+
+      <div class="progress-track">
+        <div
+          id="monthlyProgress"
+          class="progress-bar"
+        ></div>
+      </div>
+
+      <div id="monthlyStatus" class="status-text">
+        -
+      </div>
+
+    </div>
+
+
+    <!-- 今日 -->
+    <div class="today-card">
+
+      <div>
+        <div class="small-label">
+          今日使える目安
+        </div>
+
+        <div id="todayAvailable" class="today-number">
+          ¥0
+        </div>
+      </div>
+
+      <div class="today-info">
+        <div id="remainingDaysText">
+          残り0日
+        </div>
+
+        <div id="paydayText">
+          給料日 -
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- 週間予算 -->
+    <div class="section-card">
+
+      <div class="section-title">
+        今週の予算
+      </div>
+
+      <div id="weeklyPeriod" class="section-subtitle">
+        -
+      </div>
+
+      <div class="weekly-main">
+
+        <div>
+          <div class="small-label">
+            あと使える金額
+          </div>
+
+          <div id="weeklyRemaining" class="big-number">
+            ¥0
+          </div>
+        </div>
+
+        <div class="weekly-used">
+          使用額
+          <strong id="weeklyUsed">
+            ¥0
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="progress-track" style="margin-top:16px;">
+        <div
+          id="weeklyProgress"
+          class="progress-bar"
+        ></div>
+      </div>
+
+      <div class="carry-row">
+
+        <span>
+          前週繰越
+        </span>
+
+        <strong id="lastWeekBalance">
+          ¥0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- カテゴリ -->
+    <div class="section-heading">
+
+      <h2>
+        カテゴリ
+      </h2>
+
+      <button id="categoryMoreBtn">
+        すべて見る
+      </button>
+
+    </div>
+
+    <div id="categoryGrid" class="category-grid"></div>
+
+
+    <!-- 支出追加 -->
+    <div class="section-card expense-card">
+
+      <div class="section-title">
+        支出を追加
+      </div>
+
+      <div class="section-subtitle">
+        Apple Walletから受信した場合もここに自動入力されます
+      </div>
+
+
+      <label for="amount">
+        金額
+      </label>
+
+      <input
+        id="amount"
+        type="number"
+        inputmode="numeric"
+        min="0"
+        step="1"
+        placeholder="例：1280"
+      >
+
+
+      <label for="merchant">
+        店舗
+      </label>
+
+      <input
+        id="merchant"
+        type="text"
+        maxlength="100"
+        placeholder="例：スターバックス"
+      >
+
+
+      <label for="category">
+        カテゴリ
+      </label>
+
+      <select id="category"></select>
+
+
+      <label for="memo">
+        メモ・何に使った？
+      </label>
+
+      <input
+        id="memo"
+        type="text"
+        maxlength="200"
+        placeholder="例：昼食、映画など"
+      >
+
+
+      <button
+        id="addExpenseBtn"
+        class="primary-btn"
+      >
+        支出を登録
+      </button>
+
+    </div>
+
+
+    <!-- 最近の支出 -->
+    <div class="section-heading">
+
+      <h2>
+        最近の支出
+      </h2>
+
+      <button id="historyBtn">
+        すべて見る
+      </button>
+
+    </div>
+
+    <div
+      id="recentExpenseList"
+      class="expense-list"
+    ></div>
+
+  </section>
+
+
+  <!-- =========================
+       MENU
+  ========================== -->
+  <section id="menuScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="menuBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1>
+        メニュー
+      </h1>
+
+    </header>
+
+
+    <div class="menu-list">
+
+      <button id="menuSettingsBtn">
+        <span>⚙️</span>
+        <div>
+          <strong>設定</strong>
+          <small>予算・給料日など</small>
+        </div>
+      </button>
+
+
+      <button id="menuMonthlyBtn">
+        <span>📊</span>
+        <div>
+          <strong>月別集計</strong>
+          <small>月ごとの支出を見る</small>
+        </div>
+      </button>
+
+
+      <button id="menuCalendarBtn">
+        <span>📅</span>
+        <div>
+          <strong>カレンダー</strong>
+          <small>支出と予定を見る</small>
+        </div>
+      </button>
+
+
+      <button id="menuCategoryBtn">
+        <span>🏷️</span>
+        <div>
+          <strong>カテゴリ</strong>
+          <small>カテゴリ別の支出を見る</small>
+        </div>
+      </button>
+
+
+      <button id="menuAnalysisBtn">
+        <span>🤖</span>
+        <div>
+          <strong>AI分析</strong>
+          <small>支出を分析する</small>
+        </div>
+      </button>
+
+
+      <button id="darkModeMenuBtn">
+        <span>🌙</span>
+        <div>
+          <strong>ダークモード</strong>
+          <small id="darkModeStatus">OFF</small>
+        </div>
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       SETTINGS
+  ========================== -->
+  <section id="settingsScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="settingsBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1>
+        設定
+      </h1>
+
+    </header>
+
+
+    <div class="settings-card">
+
+      <label for="monthlyBudgetInput">
+        月間予算
+      </label>
+
+      <input
+        id="monthlyBudgetInput"
+        type="number"
+        inputmode="numeric"
+        min="0"
+      >
+
+
+      <label for="weeklyBudgetInput">
+        週間予算
+      </label>
+
+      <input
+        id="weeklyBudgetInput"
+        type="number"
+        inputmode="numeric"
+        min="0"
+      >
+
+
+      <label for="paydayInput">
+        給料日
+      </label>
+
+      <input
+        id="paydayInput"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        max="31"
+        placeholder="例：25"
+      >
+
+
+      <button
+        id="saveSettingsBtn"
+        class="primary-btn"
+      >
+        設定を保存
+      </button>
+
+    </div>
+
+
+    <div class="info-card">
+
+      <strong>週予算について</strong>
+
+      <br>
+
+      週の予算は月曜日から日曜日で計算します。
+
+      <br><br>
+
+      前週の余りは翌週へ繰り越されます。
+
+      <br>
+
+      前週に使いすぎた場合は、翌週の予算から差し引かれます。
+
+    </div>
+
+
+    <div class="info-card">
+
+      <strong>Apple Wallet連携</strong>
+
+      <br>
+
+      iPhoneのショートカットから、
+      Apple Walletの取引金額と店舗名をこのアプリへ渡せます。
+
+      <br><br>
+
+      受信した金額と店舗名は支出入力欄へ自動入力されます。
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       MONTHLY
+  ========================== -->
+  <section id="monthlyScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="monthlyBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1>
+        月別集計
+      </h1>
+
+    </header>
+
+    <div id="monthlyList"></div>
+
+  </section>
+
+
+  <!-- =========================
+       MONTH DETAIL
+  ========================== -->
+  <section id="monthDetailScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="monthDetailBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1 id="monthDetailTitle">
+        月詳細
+      </h1>
+
+    </header>
+
+    <div id="monthDetailContent"></div>
+
+  </section>
+
+
+  <!-- =========================
+       HISTORY
+  ========================== -->
+  <section id="historyScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="historyBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1>
+        支出履歴
+      </h1>
+
+    </header>
+
+    <div
+      id="expenseList"
+      class="expense-list"
+    ></div>
+
+  </section>
+
+
+  <!-- =========================
+       CATEGORY
+  ========================== -->
+  <section id="categoryScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="categoryBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1>
+        カテゴリ
+      </h1>
+
+    </header>
+
+    <div id="categoryList"></div>
+
+  </section>
+
+
+  <!-- =========================
+       CALENDAR
+  ========================== -->
+  <section id="calendarScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="calendarBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1>
+        カレンダー
+      </h1>
+
+    </header>
+
+
+    <div class="calendar-toolbar">
+
+      <button id="prevMonthBtn">
+        ‹
+      </button>
+
+      <strong id="calendarMonthTitle">
+        -
+      </strong>
+
+      <button id="nextMonthBtn">
+        ›
+      </button>
+
+    </div>
+
+
+    <div class="calendar-week">
+      <div>月</div>
+      <div>火</div>
+      <div>水</div>
+      <div>木</div>
+      <div>金</div>
+      <div>土</div>
+      <div>日</div>
+    </div>
+
+
+    <div
+      id="calendarGrid"
+      class="calendar-grid"
+    ></div>
+
+
+    <div
+      id="calendarDayDetail"
+      class="calendar-day-detail"
+    ></div>
+
+
+    <button
+      id="addPlanBtn"
+      class="primary-btn"
+    >
+      予定を追加
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       ANALYSIS
+  ========================== -->
+  <section id="analysisScreen" class="screen">
+
+    <header class="sub-header">
+
+      <button
+        id="analysisBackBtn"
+        class="back-btn"
+      >
+        ‹
+      </button>
+
+      <h1>
+        AI分析
+      </h1>
+
+    </header>
+
+
+    <div id="analysisContent"></div>
+
+
+    <button
+      id="copyAiPromptBtn"
+      class="primary-btn"
+    >
+      AI分析用プロンプトをコピー
+    </button>
+
+  </section>
+
+
+  <!-- =========================
+       DAILY PROMPT
+  ========================== -->
+  <div
+    id="dailyPromptModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-box">
+
+      <div class="modal-icon">
+        💰
+      </div>
+
+      <h2>
+        今日は何に使いましたか？
+      </h2>
+
+      <p class="small-label">
+        今日の支出を記録しておきましょう。
+      </p>
+
+
+      <label for="promptAmount">
+        金額
+      </label>
+
+      <input
+        id="promptAmount"
+        type="number"
+        inputmode="numeric"
+        min="0"
+        placeholder="例：1200"
+      >
+
+
+      <label for="promptMerchant">
+        店舗
+      </label>
+
+      <input
+        id="promptMerchant"
+        type="text"
+        maxlength="100"
+        placeholder="例：コンビニ"
+      >
+
+
+      <label for="promptCategory">
+        カテゴリ
+      </label>
+
+      <select id="promptCategory"></select>
+
+
+      <label for="promptMemo">
+        メモ
+      </label>
+
+      <input
+        id="promptMemo"
+        type="text"
+        maxlength="200"
+        placeholder="何に使った？"
+      >
+
+
+      <div class="modal-actions">
+
+        <button
+          id="promptAddBtn"
+          class="primary-btn"
+        >
+          登録する
+        </button>
+
+        <button
+          id="promptNoExpenseBtn"
+          class="secondary-btn"
+        >
+          今日は使っていない
+        </button>
+
+        <button
+          id="promptLaterBtn"
+          class="text-btn"
+        >
+          あとで
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       PLAN MODAL
+  ========================== -->
+  <div
+    id="planModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-box">
+
+      <h2>
+        予定を追加
+      </h2>
+
+
+      <label for="planDate">
+        日付
+      </label>
+
+      <input
+        id="planDate"
+        type="date"
+      >
+
+
+      <label for="planTitle">
+        予定
+      </label>
+
+      <input
+        id="planTitle"
+        type="text"
+        maxlength="100"
+        placeholder="例：友達と食事"
+      >
+
+
+      <label for="planTime">
+        時間
+      </label>
+
+      <input
+        id="planTime"
+        type="time"
+      >
+
+
+      <button
+        id="savePlanBtn"
+        class="primary-btn"
+      >
+        保存
+      </button>
+
+      <button
+        id="cancelPlanBtn"
+        class="secondary-btn"
+      >
+        キャンセル
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       BOTTOM NAV
+  ========================== -->
+  <nav class="bottom-nav">
+
+    <button data-nav="mainScreen">
+      <span>🏠</span>
+      <small>ホーム</small>
+    </button>
+
+    <button data-nav="calendarScreen">
+      <span>📅</span>
+      <small>カレンダー</small>
+    </button>
+
+    <button id="bottomAddBtn">
+      <span>＋</span>
+      <small>追加</small>
+    </button>
+
+    <button data-nav="menuScreen">
+      <span>☰</span>
+      <small>メニュー</small>
+    </button>
+
+  </nav>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
