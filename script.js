@@ -1141,9 +1141,7 @@ function updateToday() {
     used;
 
 
-  const todayAvailable =
-    remaining /
-    remainingDays;
+  const todayAvailable = Math.floor(monthlyRemaining / remainingDays);
 
 
   const availableElement =
